@@ -1,12 +1,26 @@
 {
+	"dehydrate": {
+		"fluid_inputs": { },
+		"fluid_outputs": { },
+		"solid_inputs": { "food": 1 },
+		"solid_outputs": { "dehydrated food": 1 }
+	},
+	"rehydrate": {
+		"fluid_inputs": { "water": [ 900, "gram" ] },
+		"fluid_outputs": { },
+		"solid_inputs": { "dehydrated food": 1 },
+		"solid_outputs": { "food": 1 }
+	},
 	"sabatier": {
-		"inputs": {
-			"carbon dioxide": 1,
-			"hydrogen": 4
+		"fluid_inputs": {
+			"carbon dioxide": [ 1, "mol" ],
+			"hydrogen": [ 4, "mol" ]
 		},
-		"outputs": {
-			"methane": 1,
-			"water": 2
-		}
+		"fluid_outputs": {
+			"methane": [ 1, "mol" ],
+			"water": [ 2, "mol" ]
+		},
+		"solid_inputs": { },
+		"solid_outputs": { }
 	}
 }
