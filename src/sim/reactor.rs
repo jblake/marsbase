@@ -31,7 +31,6 @@ pub struct ReactorContext<'a> {
 	pub solid_space: HashMap<String, u64>,
 }
 
-#[allow(dead_code)]
 impl Reactor {
 	pub fn react(&self, ctx: &mut ReactorContext) -> f64 {
 		let mut reactivity = f64::INFINITY;
@@ -109,7 +108,6 @@ impl Reactor {
 	}
 }
 
-#[allow(dead_code)]
 impl<'a> ReactorContext<'a> {
 	pub fn new(reactor: &'a Reactor, size: f64, fluids: &'a HashMap<String, Fluid>, solids: &'a HashMap<String, Solid>) -> ReactorContext<'a> {
 		let mut fluid_avail: HashMap<String, f64> = HashMap::new();

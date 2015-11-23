@@ -8,10 +8,6 @@ pub struct Solid {
 	pub mass: f64,	// grams
 }
 
-#[allow(dead_code)]
-impl Solid {
-}
-
 pub fn load_solids(path: &str) -> HashMap<String, Solid> {
 	let mut f = File::open(path).unwrap();
 	let mut buffer = String::new();
