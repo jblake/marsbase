@@ -15,6 +15,7 @@ pub struct Reactor {
 	pub fluid_outputs: HashMap<String, (f64, Unit)>,
 	pub solid_inputs: HashMap<String, u64>,
 	pub solid_outputs: HashMap<String, u64>,
+	pub power_loss: f64,
 }
 
 #[derive(Clone, Debug)]
@@ -30,10 +31,14 @@ pub struct ReactorContext<'a> {
 
 	pub solid_avail: HashMap<String, u64>,
 	pub solid_space: HashMap<String, u64>,
+
+	pub power_avail: f64,
+	pub power_space: f64,
 }
 
 impl Reactor {
 	pub fn react(&self, ctx: &mut ReactorContext) -> f64 {
+		let mut round_down = false;
 		let mut reactivity = f64::INFINITY;
 		for (key, &(need, unit)) in self.fluid_inputs.iter() {
 			let need_grams = ctx.fluids[key].grams_from(need, unit);
@@ -48,6 +53,7 @@ impl Reactor {
 			}
 		}
 		for (key, &need) in self.solid_inputs.iter() {
+			round_down = true;
 			match ctx.solid_avail.get(key) {
 				None => return 0.0,
 				Some(&avail) => {
@@ -71,6 +77,7 @@ impl Reactor {
 			}
 		}
 		for (key, &make) in self.solid_outputs.iter() {
+			round_down = true;
 			match ctx.solid_space.get(key) {
 				None => return 0.0,
 				Some(&space) => {
@@ -80,6 +87,20 @@ impl Reactor {
 					}
 				}
 			}
+		}
+		if self.power_loss > 0.0 {
+			let new_reactivity = ctx.power_avail / self.power_loss;
+			if new_reactivity < reactivity {
+				reactivity = new_reactivity;
+			}
+		} else if self.power_loss < 0.0 {
+			let new_reactivity = ctx.power_space / -self.power_loss;
+			if new_reactivity < reactivity {
+				reactivity = new_reactivity;
+			}
+		}
+		if round_down {
+			reactivity = reactivity.floor();
 		}
 		if reactivity <= 0.0 {
 			return 0.0;
@@ -93,10 +114,10 @@ impl Reactor {
 			*ctx.fluid_space.get_mut(key).unwrap() += need_grams;
 		}
 		for (key, &need) in self.solid_inputs.iter() {
-			*ctx.solid_avail.get_mut(key).unwrap() -= reactivity.round() as u64 * need;
+			*ctx.solid_avail.get_mut(key).unwrap() -= reactivity as u64 * need;
 			let space = ctx.solid_space.get_mut(key).unwrap();
 			if *space != u64::MAX {
-				*space += reactivity.round() as u64 * need;
+				*space += reactivity as u64 * need;
 			}
 		}
 		for (key, &(make, unit)) in self.fluid_outputs.iter() {
@@ -105,12 +126,14 @@ impl Reactor {
 			*ctx.fluid_space.get_mut(key).unwrap() -= make_grams;
 		}
 		for (key, &make) in self.solid_outputs.iter() {
-			*ctx.solid_avail.get_mut(key).unwrap() += reactivity.round() as u64 * make;
+			*ctx.solid_avail.get_mut(key).unwrap() += reactivity as u64 * make;
 			let space = ctx.solid_space.get_mut(key).unwrap();
 			if *space != u64::MAX {
-				*space -= reactivity.round() as u64 * make;
+				*space -= reactivity as u64 * make;
 			}
 		}
+		ctx.power_avail -= reactivity * self.power_loss;
+		ctx.power_space += reactivity * self.power_loss;
 		return reactivity;
 	}
 }
@@ -156,6 +179,8 @@ impl<'a> ReactorContext<'a> {
 			fluid_space: fluid_space,
 			solid_avail: solid_avail,
 			solid_space: solid_space,
+			power_avail: 0.0,
+			power_space: size * reactor.power_loss.abs(),
 		}
 	}
 

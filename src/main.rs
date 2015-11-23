@@ -15,6 +15,7 @@ fn main() {
 
 	*r.fluid_avail.get_mut("water").unwrap() = 1000000.0;
 	*r.solid_avail.get_mut("dehydrated food").unwrap() = 100;
+	r.power_avail = 1000000000.0;
 
 	println!("{:?}\n", r);
 

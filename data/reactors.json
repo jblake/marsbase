@@ -3,19 +3,22 @@
 		"fluid_inputs": { },
 		"fluid_outputs": { "carbon dioxide": [ 1, "litre" ] },
 		"solid_inputs": { },
-		"solid_outputs": { }
+		"solid_outputs": { },
+		"power_loss": 100
 	},
 	"dehydrate": {
 		"fluid_inputs": { },
-		"fluid_outputs": { },
+		"fluid_outputs": { "water": [ 900, "gram" ] },
 		"solid_inputs": { "food": 1 },
-		"solid_outputs": { "dehydrated food": 1 }
+		"solid_outputs": { "dehydrated food": 1 },
+		"power_loss": 2500000
 	},
 	"rehydrate": {
 		"fluid_inputs": { "water": [ 900, "gram" ] },
 		"fluid_outputs": { },
 		"solid_inputs": { "dehydrated food": 1 },
-		"solid_outputs": { "food": 1 }
+		"solid_outputs": { "food": 1 },
+		"power_loss": 100
 	},
 	"sabatier": {
 		"fluid_inputs": {
@@ -27,6 +30,7 @@
 			"water": [ 2, "mol" ]
 		},
 		"solid_inputs": { },
-		"solid_outputs": { }
+		"solid_outputs": { },
+		"power_loss": 100
 	}
 }
