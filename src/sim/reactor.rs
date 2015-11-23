@@ -15,7 +15,7 @@ pub struct Reactor {
 	pub fluid_outputs: HashMap<String, (f64, Unit)>,
 	pub solid_inputs: HashMap<String, u64>,
 	pub solid_outputs: HashMap<String, u64>,
-	pub power_loss: f64,
+	pub power_loss: f64, // joules per reactivity
 }
 
 #[derive(Clone, Debug)]
