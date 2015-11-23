@@ -1,4 +1,10 @@
 {
+	"air pump": {
+		"fluid_inputs": { },
+		"fluid_outputs": { "carbon dioxide": [ 1, "litre" ] },
+		"solid_inputs": { },
+		"solid_outputs": { }
+	},
 	"dehydrate": {
 		"fluid_inputs": { },
 		"fluid_outputs": { },
