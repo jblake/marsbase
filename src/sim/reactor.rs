@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use std::f64;
 use std::fs::File;
 use std::io::Read;
+use std::u64;
 
 use super::fluid::Fluid;
 use super::solid::Solid;
@@ -93,7 +94,10 @@ impl Reactor {
 		}
 		for (key, &need) in self.solid_inputs.iter() {
 			*ctx.solid_avail.get_mut(key).unwrap() -= reactivity.round() as u64 * need;
-			*ctx.solid_space.get_mut(key).unwrap() += reactivity.round() as u64 * need;
+			let space = ctx.solid_space.get_mut(key).unwrap();
+			if *space != u64::MAX {
+				*space += reactivity.round() as u64 * need;
+			}
 		}
 		for (key, &(make, unit)) in self.fluid_outputs.iter() {
 			let make_grams = ctx.fluids[key].grams_from(reactivity * make, unit);
@@ -102,7 +106,10 @@ impl Reactor {
 		}
 		for (key, &make) in self.solid_outputs.iter() {
 			*ctx.solid_avail.get_mut(key).unwrap() += reactivity.round() as u64 * make;
-			*ctx.solid_space.get_mut(key).unwrap() -= reactivity.round() as u64 * make;
+			let space = ctx.solid_space.get_mut(key).unwrap();
+			if *space != u64::MAX {
+				*space -= reactivity.round() as u64 * make;
+			}
 		}
 		return reactivity;
 	}
@@ -121,7 +128,11 @@ impl<'a> ReactorContext<'a> {
 		}
 		for (key, &need) in reactor.solid_inputs.iter() {
 			solid_avail.insert(key.clone(), 0);
-			solid_space.insert(key.clone(), size.floor() as u64 * need);
+			if size.is_infinite() {
+				solid_space.insert(key.clone(), u64::MAX);
+			} else {
+				solid_space.insert(key.clone(), size.floor() as u64 * need);
+			}
 		}
 		for (key, &(make, unit)) in reactor.fluid_outputs.iter() {
 			let make_grams = fluids[key].grams_from(size * make, unit);
@@ -130,7 +141,11 @@ impl<'a> ReactorContext<'a> {
 		}
 		for (key, &make) in reactor.solid_outputs.iter() {
 			solid_avail.insert(key.clone(), 0);
-			solid_space.insert(key.clone(), size.floor() as u64 * make);
+			if size.is_infinite() {
+				solid_space.insert(key.clone(), u64::MAX);
+			} else {
+				solid_space.insert(key.clone(), size.floor() as u64 * make);
+			}
 		}
 		return ReactorContext {
 			reactor: reactor,
