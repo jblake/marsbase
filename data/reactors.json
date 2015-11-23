@@ -1,0 +1,12 @@
+{
+	"sabatier": {
+		"inputs": {
+			"carbon dioxide": 1,
+			"hydrogen": 4
+		},
+		"outputs": {
+			"methane": 1,
+			"water": 2
+		}
+	}
+}
