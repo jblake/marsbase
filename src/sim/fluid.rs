@@ -49,5 +49,5 @@ pub fn load_fluids(path: &str) -> HashMap<String, Fluid> {
 	let mut f = File::open(path).unwrap();
 	let mut buffer = String::new();
 	f.read_to_string(&mut buffer).unwrap();
-	return json::decode(&buffer[..]).unwrap();
+	json::decode(&buffer[..]).unwrap()
 }

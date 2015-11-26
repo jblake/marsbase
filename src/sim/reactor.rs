@@ -134,7 +134,7 @@ impl Reactor {
 		}
 		ctx.power_avail -= reactivity * self.power_loss;
 		ctx.power_space += reactivity * self.power_loss;
-		return reactivity;
+		reactivity
 	}
 }
 
@@ -170,7 +170,7 @@ impl<'a> ReactorContext<'a> {
 				solid_space.insert(key.clone(), size.floor() as u64 * make);
 			}
 		}
-		return ReactorContext {
+		ReactorContext {
 			reactor: reactor,
 			size: size,
 			fluids: fluids,
@@ -191,5 +191,5 @@ pub fn load_reactors(path: &str) -> HashMap<String, Reactor> {
 	let mut f = File::open(path).unwrap();
 	let mut buffer = String::new();
 	f.read_to_string(&mut buffer).unwrap();
-	return json::decode(&buffer[..]).unwrap();
+	json::decode(&buffer[..]).unwrap()
 }
