@@ -4,5 +4,6 @@ version = "0.1.0"
 authors = ["Julian Blake Kongslie <jblake@jblake.org>"]
 
 [dependencies]
+cairo-rs = "0.0.6"
 gtk = "0.0.5"
 rustc-serialize = "0.3.0"

@@ -1,3 +1,4 @@
+extern crate cairo;
 extern crate gtk;
 extern crate rustc_serialize;
 
