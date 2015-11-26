@@ -1,25 +1,28 @@
+extern crate gtk;
 extern crate rustc_serialize;
-
-use std::f64;
 
 mod sim;
 
+use gtk::signal::WidgetSignals;
+use gtk::traits::container::ContainerTrait;
+use gtk::traits::widget::WidgetTrait;
+use gtk::traits::window::WindowTrait;
+
 fn main() {
+	gtk::init().unwrap();
+
 	let fluids = sim::load_fluids("data/fluids.json");
 	let solids = sim::load_solids("data/solids.json");
 	let reactors = sim::load_reactors("data/reactors.json");
 
-	let mut r = sim::ReactorContext::new(&reactors["rehydrate"], f64::INFINITY, &fluids, &solids);
+	let top = gtk::Window::new(gtk::WindowType::Toplevel).unwrap();
+	top.connect_delete_event(|_, _| { gtk::main_quit(); return gtk::signal::Inhibit(false); });
+	top.set_title("MarsBase");
 
-	println!("{:?}\n", r);
+	let lbl = gtk::Label::new("'Sup, nerds?").unwrap();
+	top.add(&lbl);
 
-	*r.fluid_avail.get_mut("water").unwrap() = 1000000.0;
-	*r.solid_avail.get_mut("dehydrated food").unwrap() = 100;
-	r.power_avail = 1000000000.0;
+	top.show_all();
 
-	println!("{:?}\n", r);
-
-	println!("reactivity {}\n", r.react());
-
-	println!("{:?}", r);
+	gtk::main();
 }

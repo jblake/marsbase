@@ -4,4 +4,5 @@ version = "0.1.0"
 authors = ["Julian Blake Kongslie <jblake@jblake.org>"]
 
 [dependencies]
+gtk = "0.0.5"
 rustc-serialize = "0.3.0"
